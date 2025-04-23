@@ -1,0 +1,60 @@
+<!-- 📄 module-selector-ui.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Выбор модулей</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        button {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Выберите модули для сборки</h1>
+    <form id="module-form">
+        <div id="module-list">Загрузка...</div>
+        <button type="submit">Собрать выбранные</button>
+    </form>
+
+    <script>
+        const moduleList = document.getElementById('module-list');
+        const form = document.getElementById('module-form');
+
+        async function loadModules() {
+            const res = await fetch('/modules');
+            const modules = await res.json();
+            moduleList.innerHTML = modules.map(mod =>
+                `<label><input type="checkbox" name="modules" value="${mod}"> ${mod}</label>`
+            ).join('');
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const selected = Array.from(document.querySelectorAll('input[name="modules"]:checked'))
+                .map(input => input.value);
+            await fetch('/selected-modules', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(selected),
+            });
+
+        });
+
+        loadModules();
+    </script>
+</body>
+
+</html>
