@@ -72,7 +72,7 @@ module.exports = {
       });
 
       // Веб интерфейс для выбора модулей
-      app.get("/select", (req, res) => {
+      app.get("/", (req, res) => {
         res.sendFile(SELECT_UI_HTML);
       });
 
